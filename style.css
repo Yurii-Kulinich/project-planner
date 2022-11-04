@@ -1,0 +1,97 @@
+body {
+    padding: 0px;
+    margin: 0px;
+    width: 100vw;
+    height: 10wh;
+    display: flex;
+    color: antiquewhite;
+    flex-direction: column;
+    align-items: center;
+    
+}
+
+header {
+    margin-top: 2vw;
+    width: 90%;
+    color: aqua;
+    display: flex;
+    flex-direction: column;
+}
+
+.heading {
+    display: flex;
+    align-items: center;
+    gap: 2vw;
+}
+
+.fa-sharp {
+    font-size: 5vw;
+}
+
+.text-part p {
+    margin: 3px;
+}
+
+.input-panel {
+    width: 500px;
+    margin: 8px;
+    padding: 2px;
+    margin-left: 0px;
+}
+
+.input-panel button {
+    padding: 4px;
+    width: 25%;
+}
+
+.input-panel input {
+    height: 23px;
+
+    width: 68%;
+}
+
+main {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.task-table {
+    width: 100%;
+    border-top: 2px solid #B0AFAC;
+    border-bottom: 2px solid #B0AFAC;
+}
+
+.task {
+    display: flex;
+}
+
+.task-box {
+    width: 20%;
+    border-right: 2px solid #B0AFAC;
+    height: 30px;
+    color: black;
+}
+
+.due-date {
+    border-right: none;
+}
+
+.done {
+    background-color: aquamarine;
+
+}
+
+.inprocess {
+    background-color: aqua;
+}
+
+.todo {
+    background-color: white;
+}
+
+select {
+    width: 50%;
+    height: 100%;
+}

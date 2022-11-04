@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="https://kit.fontawesome.com/f5e46584c2.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <div class="heading">
+            <i class="fa-sharp fa-solid fa-check"></i>
+            <h1>Task List</h1>
+        </div>
+        <div class="text-part">
+            <p>Use this template to track your personal tasks.</p>
+            <p>Click + New to create a new task directly on this board.</p>
+            <p>Click an existing task to add additional context or subtasks.</p>
+        </div>
+
+    </header>
+    <main>
+        <div class="input-panel">
+            <input type="text" id="input-field">
+            <button id='add-task'>press to add Task</button>
+            <div class="filters">
+                <select name="filter" id="filter">
+                    <option value="all">show me all</option>
+                    <option value="todo">show me todo tasks</option>
+                    <option value="inprocess">show me inprocess tasks</option>
+                    <option value="done">show me done tasks</option>
+                </select>
+                <select name="sorter" id="sorter">
+                    <option value="normal">Sort by date added</option>
+                    <option value="alpha">Sort by name</option>
+                    <option value="urgency">Sort buy urgency</option>
+                </select>
+            </div>
+        </div>
+        <div class="task-table">
+            <div class="task head-line">
+                <div class="task-box name">Task Name</div>
+                <div class="task-box date">Date Created</div>
+                <div class="task-box status">Status</div>
+                <div class="task-box description">Description</div>
+                <div class="task-box due-date">Due Date</div>
+            </div>
+            <!-- <div class="task data-line todo">
+                <div class="task-box name">{{name}}</div>
+                <div class="task-box date">{{creationDate}}</div>
+                <div class="task-box status">{{status}}
+                    <select name="status-selector" id="status-selector">
+                        <option value="todo">To Do</option>
+                        <option value="inprocess">In Process</option>
+                        <option value="done">Done</option>
+                    </select>
+                </div>
+                <div class="task-box description">{{description}}</div>
+                <div class="task-box due-date">{{dueDate}}</div>
+            </div> -->
+            <template id="new-task">
+                <div class="lines-box">
+                    <div class="task data-line todo">
+                        <div class="task-box name">{{name}}</div>
+                        <div class="task-box date">{{creationDate}}</div>
+                        <div class="task-box status">{{status}}
+                            <select name="status-selector" id="status-selector">
+                                <option value="todo">To Do</option>
+                                <option value="inprocess">In Process</option>
+                                <option value="done">Done</option>
+                            </select>
+                        </div>
+                        <div class="task-box description">{{description}}</div>
+                        <div class="task-box due-date">{{dueDate}}</div>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </main>
+    <script src="https://unpkg.com/mustache@latest"></script>
+    <script>
+          let taskButton = document.querySelector('#add-task');
+        let taskInputValue = document.querySelector('#input-field');
+        let output = document.querySelector('.task-table');
+        let changeElement = document.querySelector('.task-table');
+        let filterElement = document.querySelector('#filter');
+        let sortElement = document.querySelector('#sorter');
+        let taskBox = document.querySelector('.lines-box');
+
+
+        taskButton.addEventListener('click', addTask); 
+
+        changeElement.addEventListener('change', changeTaskState);
+        filterElement.addEventListener('change', filterTasks);
+        sortElement.addEventListener('change', sortTasks);
+    
+        let taskArray  = [];
+
+      
+        class Task {
+            name;
+            description;
+            status;
+            creationDate;
+            dueDate;
+            remainingTime;
+            template = document.querySelector('#new-task').innerHTML;
+            
+            constructor(name, description, dueDate, creationDate) {
+                this.name = name;
+                this.description = description;
+                this.status = null;
+                this.creationDate = todayDate(creationDate);
+               
+               
+                this.dueDate = todayDate(dueDate);
+                this.remainingTime = 7;
+            }
+
+            renderIn() {
+                let html = Mustache.render(this.template, this);
+                output.insertAdjacentHTML('beforeend', html);                
+            }                        
+        }
+
+        function sortTasks() {
+           
+            let nameNodes = document.querySelectorAll('.data-line .name');
+            let stringArray = [];
+            let taskBox = document.querySelector('.lines-box');
+            // let mainCopy = Array.from(taskArray);
+            for (const iterator of nameNodes) {
+                stringArray.push(iterator.innerText)
+            }
+            let sortedString = stringArray.sort();
+            for (let index = sortedString.length - 1; index >= 0; index--) {
+                console.log('')
+                const element = sortedString[index];
+                for (const iterator of nameNodes) {
+                    if(iterator.innerText === element) {
+                    taskBox.prepend(iterator.parentElement)
+                    
+                    }
+                }
+                
+            }
+        }
+
+        function todayDate(date) {
+           
+           let dateArray = new Date(date).toString().split(' ');
+           return dateArray[1] + " " + dateArray [2] + " " + dateArray [3];
+      }
+
+        function filterTasks(e) {
+            let lines = document.querySelectorAll('.data-line');
+            let target = e.target.value; 
+            for (const iterator of lines) {
+               iterator.style.visibility = 'visible';
+            }
+            if (target !== 'all') {
+            for (const iterator of lines) {
+                if(!iterator.classList.contains(target)) iterator.style.visibility= 'hidden';
+            }
+        }
+        }
+
+        function changeTaskState(e) {
+            let parent = e.target.parentElement;
+            let grandParent = parent.parentElement;
+            if (e.target.value === 'done') {                
+                grandParent.classList.add("done")
+                grandParent.classList.remove("todo");
+                grandParent.classList.remove("inprocess");
+
+            } else if (e.target.value === 'inprocess'){
+                grandParent.classList.add("inprocess")
+                grandParent.classList.remove("todo");
+                grandParent.classList.remove("done");
+            } else {
+                grandParent.classList.add("todo")
+                grandParent.classList.remove("done");
+                grandParent.classList.remove("inprocess");
+            }
+        }
+
+        function addTask() {
+            let name = document.querySelector('#input-field').value;
+            let description = prompt('add task despription');
+            console.log(description);
+            let creationDate = Date.now();
+            console.log("this is " + creationDate);
+            let dueDate = new Date(prompt('add due date in following format: year/month/day'));
+            console.log(dueDate.getTime());
+            let tempTask = new Task(name, description, dueDate,creationDate);
+            taskArray.push(tempTask)
+            tempTask.renderIn();
+            taskInputValue.value = '';
+          
+        }
+
+    </script>
+</body>
+</html>
